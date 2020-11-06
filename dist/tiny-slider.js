@@ -691,7 +691,7 @@ var tns = function(options) {
       container = options.container,
       containerParent = container.parentNode,
       containerHTML = container.outerHTML,
-      slideItems = container.children,
+      slideItems = container.querySelectorAll('.tns-item:not(.tns-slide-cloned)'),
       slideCount = slideItems.length,
       breakpointZone,
       windowWidth = getWindowWidth(),
@@ -1141,10 +1141,10 @@ var tns = function(options) {
       middleWrapper.id = slideId + '-mw';
       middleWrapper.className = 'tns-ovh';
 
-      outerWrapper.appendChild(middleWrapper);
-      middleWrapper.appendChild(innerWrapper);
+      //outerWrapper.appendChild(middleWrapper);
+      //middleWrapper.appendChild(innerWrapper);
     } else {
-      outerWrapper.appendChild(innerWrapper);
+      //outerWrapper.appendChild(innerWrapper);
     }
 
     if (autoHeight) {
@@ -1152,31 +1152,41 @@ var tns = function(options) {
       wp.className += ' tns-ah';
     }
 
-    containerParent.insertBefore(outerWrapper, container);
-    innerWrapper.appendChild(container);
+    // containerParent.insertBefore(outerWrapper, container);
+    // innerWrapper.appendChild(container);
 
     // add id, class, aria attributes
     // before clone slides
-    forEach(slideItems, function(item, i) {
+
+    var i = 0;
+
+    forEach(slideItems, function(item) {
       addClass(item, 'tns-item');
-      if (!item.id) { item.id = slideId + '-item' + i; }
-      if (!carousel && animateNormal) { addClass(item, animateNormal); }
-      setAttrs(item, {
-        'aria-hidden': 'true',
-        'tabindex': '-1'
-      });
+      if (!hasClass(item, 'tns-slide-cloned')) {
+        if (!item.id) { item.id = slideId + '-item' + i; }
+
+        if (!carousel && animateNormal) { addClass(item, animateNormal); }
+        setAttrs(item, {
+          'aria-hidden': 'true',
+          'tabindex': '-1'
+        });
+
+        i = i + 1;
+      }
     });
+
 
     // ## clone slides
     // carousel: n + slides + n
     // gallery:      slides + n
-    if (cloneCount) {
+    if (true) {
       var fragmentBefore = doc.createDocumentFragment(),
           fragmentAfter = doc.createDocumentFragment();
 
       for (var j = cloneCount; j--;) {
         var num = j%slideCount,
             cloneFirst = slideItems[num].cloneNode(true);
+
         addClass(cloneFirst, slideClonedClass);
         removeAttrs(cloneFirst, 'id');
         fragmentAfter.insertBefore(cloneFirst, fragmentAfter.firstChild);
@@ -1189,10 +1199,11 @@ var tns = function(options) {
         }
       }
 
-      container.insertBefore(fragmentBefore, container.firstChild);
-      container.appendChild(fragmentAfter);
-      slideItems = container.children;
+      //container.insertBefore(fragmentBefore, container.firstChild);
+      //container.appendChild(fragmentAfter);
     }
+
+
 
   }
 
@@ -1611,7 +1622,9 @@ var tns = function(options) {
   function destroy () {
     // sheet
     sheet.disabled = true;
-    if (sheet.ownerNode) { sheet.ownerNode.remove(); }
+    if (sheet.ownerNode) {
+      //sheet.ownerNode.remove();
+    }
 
     // remove win event listeners
     removeEvents(win, {'resize': onResize});
@@ -1637,9 +1650,9 @@ var tns = function(options) {
     if (mouseDrag) { removeEvents(container, dragEvents); }
 
     // cache Object values in options && reset HTML
-    var htmlList = [containerHTML, controlsContainerHTML, prevButtonHTML, nextButtonHTML, navContainerHTML, autoplayButtonHTML];
+    //var htmlList = [containerHTML, controlsContainerHTML, prevButtonHTML, nextButtonHTML, navContainerHTML, autoplayButtonHTML];
 
-    tnsList.forEach(function(item, i) {
+    /*tnsList.forEach(function(item, i) {
       var el = item === 'container' ? outerWrapper : options[item];
 
       if (typeof el === 'object' && el) {
@@ -1648,7 +1661,7 @@ var tns = function(options) {
         el.outerHTML = htmlList[i];
         options[item] = prevEl ? prevEl.nextElementSibling : parentEl.firstElementChild;
       }
-    });
+    });*/
 
 
     // reset variables

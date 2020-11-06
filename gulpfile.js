@@ -3,7 +3,7 @@ const resolve = require('rollup-plugin-node-resolve');
 const babel = require('rollup-plugin-babel');
 
 const gulp = require('gulp');
-const packages = require('/www/package.json');
+const packages = require('./package.json');
 const $ = require('gulp-load-plugins')({
   config: packages
 });
@@ -27,10 +27,10 @@ let libName = 'tiny-slider',
     pathTest = 'tests/js/',
     scriptSources = [pathSrc + '**/*.js', '!' + pathSrc + moduleScript, '!' + pathSrc + helperIEScript];
 
-function errorlog (error) {  
-  console.error.bind(error);  
-  this.emit('end');  
-}  
+function errorlog (error) {
+  console.error.bind(error);
+  this.emit('end');
+}
 
 function readfiles (dir, arr) {
   fs.readdirSync(dir).forEach( file => {
@@ -47,7 +47,7 @@ gulp.task('njk', function() {
 
   files.forEach(function(file) {
     let dest = path.dirname(file).replace('/template', '');
-    
+
     return gulp.src(file)
       .pipe($.plumber())
       .pipe($.nunjucks.compile({}, {
@@ -74,18 +74,18 @@ function sassTask(src, dest) {
   return gulp.src(src)
     .pipe($.sourcemaps.init())
     .pipe($.sass({
-      outputStyle: 'compressed', 
+      outputStyle: 'compressed',
       precision: 7
-    }).on('error', $.sass.logError))  
+    }).on('error', $.sass.logError))
     .pipe($.sourcemaps.write(sourcemapsDest))
     .pipe(gulp.dest(dest))
     .pipe(browserSync.stream());
 }
 
 // SASS Task
-gulp.task('sass', function () {  
+gulp.task('sass', function () {
   sassTask(pathSrc + sassFile, pathDest);
-});  
+});
 
 // Script Task
 gulp.task('script', function () {
@@ -199,9 +199,9 @@ gulp.task('server', function() {
 
 // Default Task
 gulp.task('default', [
-  // 'sass',
-  // 'min',
-  // 'helper-ie8',
-  // 'makeDevCopy',
-  'server', 
-]);  
+   'sass',
+   'min',
+   'helper-ie8',
+   'makeDevCopy',
+  //'server',
+]);
